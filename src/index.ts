@@ -8,7 +8,7 @@ const yMax = 750;
 const boardCenter = new paper.Point(xMax / 2, yMax / 2);
 
 let mousePos: paper.Point;
-paper.view.on('mousemove', function(event: paper.ToolEvent) {
+paper.view.on('mousemove', function (event: paper.ToolEvent) {
   mousePos = event.point;
 });
 
@@ -17,28 +17,28 @@ let keydown = false;
 let player1 = true;
 
 function roundPoint(point: paper.Point) {
-  return new paper.Point([Math.round(point.x), Math.round(point.y)])
+  return new paper.Point([Math.round(point.x), Math.round(point.y)]);
 }
 
 function getBoard(): [paper.Group, string[][]] {
-  const boardPaths = []
-  const gamestate: string[][] = [] // 2d array of 0's, initial empty
+  const boardPaths = [];
+  const gamestate: string[][] = []; // 2d array of 0's, initial empty
   for (let rowi = 0; rowi < 14; rowi++) {
-    const row = []
+    const row = [];
     for (let coli = 0; coli < 14; coli++) {
-      const topleft = new paper.Point([coli * edgeSize, rowi * edgeSize])
+      const topleft = new paper.Point([coli * edgeSize, rowi * edgeSize]);
       if ((rowi == 4 && coli == 4) || (rowi == 9 && coli == 9)) {
         const startingCircle = new paper.Path.Circle(
-          topleft.add(new paper.Point([edgeSize / 2, edgeSize / 2])), 
+          topleft.add(new paper.Point([edgeSize / 2, edgeSize / 2])),
           edgeSize / 3);
         boardPaths.push(startingCircle);
       }
-      boardPaths.push(new paper.Path.Rectangle(topleft, new paper.Size([edgeSize, edgeSize])))
+      boardPaths.push(new paper.Path.Rectangle(topleft, new paper.Size([edgeSize, edgeSize])));
       row.push('0');
     }
     gamestate.push(row);
   }
-  const board = new paper.Group(boardPaths)
+  const board = new paper.Group(boardPaths);
   return [board, gamestate];
 }
 
@@ -126,13 +126,13 @@ function drawTiles(tiles1: paper.Group[], tiles2: paper.Group[]) {
       tile.fillColor = new paper.Color('#2076e6');
     }
     tile.strokeColor = new paper.Color('black');
-    tile.position = getSpawnPoint(tileCode)
+    tile.position = getSpawnPoint(tileCode);
   }
 }
 
 function updateGamestate(tiles1: paper.Group[], tiles2: paper.Group[], tile: paper.Group, gamestate: string[][]) {
   function extractTopLeftPoints(tile: paper.Group) {
-    const topLeftPoints: paper.Point[] = []
+    const topLeftPoints: paper.Point[] = [];
     for (let i = 0; i < tile.children.length; i++) {
       const path = tile.children[i] as paper.Path;
       const topleftPoint = path.segments[1].point;
@@ -186,21 +186,21 @@ function addListeners(tiles1: paper.Group[], tiles2: paper.Group[], gamestate: s
   }
 
   function getSnap(val: number) {
-    return edgeSize * Math.round(val / edgeSize)
+    return edgeSize * Math.round(val / edgeSize);
   }
 
-  paper.view.on('keyup', function() {
+  paper.view.on('keyup', function () {
     keydown = false;
-  })
+  });
 
   paper.view.on('keydown', function (event: paper.KeyEvent) {
     if (!keydown) {
       if (selectedTile) {
         if (event.key == 'a') {
-          rotateAnim(selectedTile, false)
+          rotateAnim(selectedTile, false);
         }
         else if (event.key == 'd') {
-          rotateAnim(selectedTile, true)
+          rotateAnim(selectedTile, true);
         }
         else if (event.key == 's') {
           if (!paper.view.onFrame) {
@@ -251,7 +251,7 @@ function addListeners(tiles1: paper.Group[], tiles2: paper.Group[], gamestate: s
         player1 = !player1;
         drawInfoText(infoText, player1);
       }
-    } 
+    }
     else {
       const targetTile = findAtPoint(tiles1.concat(tiles2), mousePos);
       if (targetTile) {
@@ -271,12 +271,12 @@ const [board, gamestate] = getBoard();
 drawBoard(board);
 
 const infoText = getInfoText();
-drawInfoText(infoText, player1); 
+drawInfoText(infoText, player1);
 
 (function () {
   const controls = new paper.PointText(new paper.Point(boardCenter.x, 700));
   controls.justification = 'center';
-  controls.content = 'Left click to select tile, move mouse to move tile, left click again to place tile.\nFor selected tile: A and D to rotate, S to mirror across y, W to mirror across x, F to return.'
+  controls.content = 'Left click to select tile, move mouse to move tile, left click again to place tile.\nFor selected tile: A and D to rotate, S to mirror across y, W to mirror across x, F to return.';
   controls.fillColor = new paper.Color('black');
 })();
 
